@@ -12,7 +12,7 @@ void IMG::free_buffer() {
 	free(buffer);
 }
 
-void write_file(IMG img, string filename) {
+void write_file(IMG &img, string filename) {
 	
 	ofstream ofs(filename, ios_base::out | ios_base::binary);
 	ofs << img.type << endl << img.rows << ' ' << img.columns << endl << img.max;
@@ -50,3 +50,12 @@ IMG read_file(char mode) {
 	return IMG(type, rows, columns, max, buffer);
     
 } // read_file
+
+IMG copy_img(IMG &img) {
+	IMG copy = img;
+	int size = copy.rows * copy.columns * 3;
+
+	copy.buffer = (unsigned char*) malloc (sizeof(unsigned char) * size);
+
+	return copy;
+} // copy_img

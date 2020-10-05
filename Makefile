@@ -1,7 +1,10 @@
 all: prog
 
-prog: main.o img.o
-	g++ -o prog main.o img.o
+prog: main.o img.o graph.o
+	g++ -o prog main.o img.o graph.o
+
+graph.o:
+	g++ -c graph.cpp
 
 img.o:
 	g++ -c img.cpp
@@ -12,6 +15,8 @@ main.o:
 clean:
 	rm -rf *.o
 	rm -rf prog
+	
+rrun: clean run
 
 run: prog
 	./prog

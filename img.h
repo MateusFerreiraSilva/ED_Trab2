@@ -16,7 +16,8 @@ class IMG {
 		void free_buffer();
 };
 
-void write_file(IMG img, string filename);
+void write_file(IMG &img, string filename);
 IMG read_file(char mode);
+IMG copy_img(IMG &img);
 
 #endif
