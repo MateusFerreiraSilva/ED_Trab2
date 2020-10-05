@@ -16,7 +16,7 @@ clean:
 	rm -rf *.o
 	rm -rf prog
 	
-rrun: clean run
+reset: clean all
 
 run: prog
 	./prog
