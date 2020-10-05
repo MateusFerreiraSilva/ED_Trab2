@@ -14,10 +14,6 @@ void binary() {
 
 	cin >> rows >> columns >> max;
 
-	FILE *fp = fopen("aux.ppm", "w");
-	fprintf(fp, "P6\n%d %d\n255\n", rows, columns);
-	fclose(fp); 
-
 	int aux, it = 0;
 	unsigned char *buffer;
 	int size = rows * columns * 3;
@@ -31,11 +27,22 @@ void binary() {
 		} // for
 	} // for
 
-	fp = fopen("aux.ppm", "ab");
-	fwrite(buffer, 1, size, fp);
-	fclose(fp);
+	ostream& operator <<(std::ostream &outputStream, const PPMObject &other) {
+    outputStream << "P6"     << "\n"
+        << rows       << " "
+        << columns      << "\n"
+        << max   << "\n";
+    outputStream.write(other.m_Ptr, size);
+    return outputStream;
+	}
 
-	free(buffer);
+	// // fp = fopen("aux.ppm", "ab");
+	// outfile.write((char*)buffer, size);
+	// outfile.close();
+	// // fwrite(buffer, 1, size, fp);
+	// // fclose(fp);
+
+	// free(buffer);
 
 } // binary
 

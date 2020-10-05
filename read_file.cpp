@@ -23,45 +23,36 @@ void read_file(char mode) {
 		} // for
 	} // for
 
+	ofstream ofs("aux.ppm", ios_base::out | ios_base::binary);
+	ofs << "P6" << endl << rows << ' ' << columns << endl << max;
+
+
+	unsigned char *buffer;
+	int size = rows * columns * 3;
+	buffer = (unsigned char*) malloc (sizeof(unsigned char)*size);
+	fread(buffer, sizeof(unsigned char), size, stdin);
 
 	if(mode == 'b') {
-		unsigned char *buffer;
-		int size = rows * columns * 3;
-		buffer = (unsigned char*) malloc (sizeof(unsigned char)*size);
-		fread(buffer, 1, size, stdin);
+		int aux = 0;
+		for(int i = 0; i < rows; i++) {
+			for(int j = 0; j < columns; j++) {
+				for(int k = 0; k < 3; k++) {
+					ofs << buffer[aux++];
+				} // for
+			} // for
+		} // for
 
+	} else {
 		int aux = 0;
 		for(int i = 0; i < rows; i++)
 			for(int j = 0; j < columns; j++)
-				for(int k = 0; k < 3; k++)
-					v[i][j][k] = buffer[aux++];
-
-		free(buffer);
-
-	} else {
-		for(int i = 0; i < rows; i++)
-			for(int j = 0; j < columns; j++)
 				for(int k = 0; k < 3; k++)	
-					scanf("%hhu", &v[i][j][k]);
+					scanf("%hhu", &buffer[aux++]);
 
-	} // else
-		
-	//print
-	cout << str << endl;
-	cout << rows << " " << columns << endl;
-	cout << max << endl;
-	for(int i = 0; i < rows; i++) {
-		for(int j = 0; j < columns; j++) {
-			for(int k = 0; k < 3; k++) {
-				printf("%hhu", v[i][j][k]);
-				if(k != 2) cout << ' '; 
-			} // for
-			if(j != columns-1)
-				cout << ' ';
-			else if(i != rows-1)
-				cout << '\n';
-		} // for
-	} // for
+	} // else	
+    
+	free(buffer);
+    ofs.close();
 
 } // read_file
 
