@@ -1,66 +1,75 @@
 #include"img.h"
 
-IMG::IMG(string type, int rows, int columns, int max, unsigned char* buffer) {
-	this->type = type;
-	this->rows = rows;
-	this->columns = columns;
-	this->max = max;
-	this->buffer = buffer;
+IMG::IMG() {
+	this->type = "";
+	this->rows = 0;
+	this->columns = 0;
+	this->max = 0;
+	this->buffer = (unsigned char*) calloc(sizeof(unsigned char), rows*columns*3);
 }
 
-void IMG::free_buffer() {
-	free(buffer);
-}
+IMG::~IMG() { 
+	cout << "buffer will dies..\n";
+    delete buffer; 
+    cout << "buffer ga shinda\n";
+} 
 
-void write_file(IMG &img, string filename) {
-	int size = img.rows * img.columns * 3;
+void IMG::write_img(string filename) {
+	int size = rows * columns * 3;
 	
 	ofstream ofs(filename, ios_base::out | ios_base::binary);
-	ofs << img.type << endl << img.rows << ' ' << img.columns << endl << img.max;
+	ofs << type << endl << rows << ' ' << columns << endl << max;
 
 	for(int i = 0; i < size; i++)
-		ofs << img.buffer[i];
-
-	ofs << flush;
+		ofs << buffer[i];
 
     ofs.close();
 
+	//fflush(stdout);
+
 } // write_file
 
-IMG read_file(char mode) {
-	string type;
-	int rows, columns, max;
+void IMG::read_img(char mode) {
+	string t; // type
+	int r, c, m; // rows, columns, max
 
-	cin >> type;	
-	cin >> rows >> columns >> max;
+	cin >> t;	
+	cin >> r >> c >> m;
 
-	int size = rows * columns * 3;
-	unsigned char *buffer;
-	buffer = (unsigned char*) malloc (sizeof(unsigned char)*size);
+	type = t;
+	rows = r;
+	columns = c;
+	max = m;
+	int size = rows * columns * 3;	
 	
 	if(mode == 'b')
-		fread(buffer, sizeof(unsigned char), size, stdin);
-	else {
+		fread(buffer, sizeof(unsigned char), size, stdin);	
+	else
 		for(int i = 0; i < size; i++)
 			scanf("%hhu", &buffer[i]);		
-	} // else
 
-	return IMG(type, rows, columns, max, buffer);
-    
 } // read_file
 
-IMG seg_img(IMG *img, list<int> &points) {
-	int size = img->rows * img->columns * 3;
-	unsigned char* buffer;
+void IMG::seg_img(vector<bool> &points) {
+	int size = rows * columns * 3;
 
-	buffer = (unsigned char*) calloc (sizeof(unsigned char), size);
-	for(auto p : points) {
-		p *= 3;
-		for(int i = p; i < p+3; i++)
-			buffer[i] = img->buffer[i];
-	} // for
+	for(int i = 0; i < size; i++)
+		if(points[i])
+			buffer[i] = 0;
 
-	IMG segmented_img(img->type, img->rows, img->columns, img->max, buffer);
-
-	return segmented_img;
 } // seg_img
+
+void IMG::copy_img(IMG &img) {
+	type = img.type;
+	rows = img.rows;
+	columns = img.columns;
+	max = img.max;
+
+	int size = rows * columns * 3;
+
+	// for(int i = 0; i < size; i++)
+	// 	buffer[i] = img.buffer[i];
+
+	// printf("%hhu %hhu", img.buffer[0], img.buffer[9]);
+
+} // copy_img

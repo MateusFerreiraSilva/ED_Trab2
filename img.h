@@ -12,12 +12,12 @@ class IMG {
 		int max;
 		unsigned char* buffer;
 
-		IMG(string type, int rows, int columns, int max, unsigned char* buffer);
-		void free_buffer();
+		IMG();
+		~IMG();
+		void read_img(char mode);
+		void write_img(string filename);
+		void seg_img(vector<bool> &points);
+		void copy_img(IMG &img);
 };
-
-void write_file(IMG &img, string filename);
-IMG read_file(char mode);
-IMG seg_img(IMG *img, list<int> &points);
 
 #endif

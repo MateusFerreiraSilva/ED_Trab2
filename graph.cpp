@@ -34,9 +34,8 @@ bool similar_pixel(map<string, unsigned char> &a, map<string, unsigned char> &b,
 } // similar_pixel
 
 Graph::Graph(int V, IMG &img) {
-    this->V = V; 
-    adj = new set<int>[V];
-    this->img = new IMG(img.type, img.rows, img.columns, img.max, img.buffer);
+    this->V = V;
+    this->img.copy_img(img);
 
     vector<string> colors = {"red", "green", "blue"}; 
 
@@ -53,11 +52,10 @@ Graph::Graph(int V, IMG &img) {
         } // for
     } // for
 } 
-  
-Graph::~Graph() { 
-    delete[] adj;
-    delete img; 
-} 
+
+Graph::~Graph() {
+    // adjacency_list_free(adj);
+}
 
 void Graph::addEdge(int v, int w) { 
     adj[v].insert(w); 
@@ -73,11 +71,11 @@ bool Graph::is_connected(int v, int w) {
 void Graph::connect_pixels(int x) {
     // cout << "segmenting file..." << endl;
     int v1 = 0, v2;
-    for(int i = 0; i < img->rows; i++) {
-        for(int j = 0; j < img->columns; j++) {
+    for(int i = 0; i < img.rows; i++) {
+        for(int j = 0; j < img.columns; j++) {
             v2 = 0;
-            for(int l = 0; l < img->rows; l++) {
-                for(int m = 0; m < img->columns; m++) {
+            for(int l = 0; l < img.rows; l++) {
+                for(int m = 0; m < img.columns; m++) {
                     if(i != l || j != m) { // check if are the same pixel
                         if(is_connected(v1, v2)) {
                             v2++;
@@ -99,7 +97,8 @@ void Graph::connectedComponents() {
     // cout << "making files..." << endl;
     vector<bool> visited(V);
     fill(visited.begin(), visited.end(), false);
-    list<int> points;
+    vector<bool> points(V*3);
+    fill(points.begin(), points.end(), true);
 
     string filename = "./SEG/segfile";
     string filetype = ".ppm";
@@ -109,45 +108,24 @@ void Graph::connectedComponents() {
         if(visited[v] == false) {
             DFS(v, visited, points);
 
-            IMG segmented_img = seg_img(img, points); 
-
             string file = filename + to_string(filenum) + filetype;
 
+            IMG new_img;
+            new_img.copy_img(img);
+            new_img.seg_img(points);
+            new_img.write_img(filename); 
 
-            // cout << "Case " << cont + 1 << ":\n";
-
-            // cout << img->type << endl;
-            // cout << img->rows << endl;
-            // cout << img->columns << endl;
-            // cout << img->max << endl;
-            // cout << "buffer: \n";
-            // printf("%hhu\n", img->buffer[0]);
-            // printf("%hhu\n", img->buffer[5]);
-
-            // cout << endl << "Copy\n";
-            // cout << copy.type << endl;
-            // cout << copy.rows << endl;
-            // cout << copy.columns << endl;
-            // cout << copy.max << endl;
-            // cout << "buffer: \n";
-            // printf("%hhu\n", copy.buffer[0]);
-            // printf("%hhu\n", copy.buffer[5]);
-
-            write_file(segmented_img, file);
-
-            // cout << endl << endl << endl;
-
-            points.clear();
-            // segmented_img.free_buffer();
+            fill(points.begin(), points.end(), true); // reset points
             filenum++;
 
         } // if
     } // for
 } 
   
-void Graph::DFS(int v, vector<bool> &visited, list<int> &points) { 
+void Graph::DFS(int v, vector<bool> &visited, vector<bool> &points) { 
     visited[v] = true;
-    points.push_back(v);
+    for(int i = v; i < 3; i++)
+        points[i] = false;
 
     for(auto i = adj[v].begin(); i != adj[v].end(); i++) 
         if(!visited[*i]) 

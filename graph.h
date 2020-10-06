@@ -1,17 +1,16 @@
 #include "img.h"
 
-
 #ifndef G
 #define G
 
 class Graph { 
     int V;    
-    set<int> *adj; // adjacency list with set
+    map<int, set<int>> adj; // adjacency list with set
   
-    void DFS(int v, vector<bool> &visited, list<int> &points);
+    void DFS(int v, vector<bool> &visited, vector<bool> &points);
     bool is_connected(int v, int w); 
 	public:
-		IMG *img;
+		IMG img;
 		vector< vector< map<string, unsigned char>>> pixel;
 
 	    Graph(int V, IMG &img);

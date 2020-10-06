@@ -12,20 +12,20 @@ int main(int argc, char *argv[]) {
 
 	char mode = argv[2][0];
 
-	IMG img = read_file(mode);
-	// write_file(img, "aux1.ppm");
-	// write_file(img, "aux2.ppm");
-	// write_file(img, "aux3.ppm");
+	IMG img;
+	img.read_img(mode);
 
-	// vector<int> v;
-	// seg_img(img, v);
-	
+	// cout << img.rows << endl;
+	// cout << img.columns << endl;
+
 	int pixels_size = img.rows * img.columns;
-	Graph g(pixels_size, img);
-	g.connect_pixels(x);
-	g.connectedComponents();
+	
+	cout << pixels_size << endl;
 
-	img.free_buffer();
+	Graph g(pixels_size, img);
+	cout << "bbbbbbb\n";
+	// g.connect_pixels(x);
+	// g.connectedComponents();
 
 	return 0;
 } // main
