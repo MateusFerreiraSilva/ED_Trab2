@@ -17,7 +17,8 @@ int main(int argc, char *argv[]) {
 	// IMG copy = copy_img(img);
 	int pixels_size = img.rows * img.columns;
 	Graph g(pixels_size, img);
-	g.connect(x);
+	g.connect_pixels(x);
+	g.connectedComponents();
 
 	img.free_buffer();
 	// copy.free_buffer();

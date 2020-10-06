@@ -51,7 +51,7 @@ IMG read_file(char mode) {
     
 } // read_file
 
-IMG copy_img(IMG &img) {
+IMG copy_img(IMG img) {
 	IMG copy = img;
 	int size = copy.rows * copy.columns * 3;
 

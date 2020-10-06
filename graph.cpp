@@ -1,5 +1,23 @@
 #include"graph.h"
 
+
+IMG segmentation(IMG img, vector<bool> points) {
+    int size = img.rows * img.columns;
+
+    int aux = 0;
+    for(int i = 0; i < size; i++) {
+        if(!points[i])
+            for(int j = 0; j < 3; j++) {
+                img.buffer[aux++] = 0;        
+        } // for
+        else
+            aux += 3;
+    } // for
+
+    return img;
+
+}
+
 int similar_color(unsigned char a, unsigned char b, int x) {
     if(a == b) return 1;
     
@@ -70,7 +88,7 @@ bool Graph::is_connected(int v, int w) {
     return false;
 } // is_connected
 
-void Graph::connect(int x) {
+void Graph::connect_pixels(int x) {
     int v1 = 0, v2;
     for(int i = 0; i < img->rows; i++) {
         for(int j = 0; j < img->columns; j++) {
@@ -78,8 +96,10 @@ void Graph::connect(int x) {
             for(int l = 0; l < img->rows; l++) {
                 for(int m = 0; m < img->columns; m++) {
                     if(i != l || j != m) { // check if are the same pixel
-                        if(is_connected(v1, v2) && similar_pixel(pixel[i][j], pixel[l][m], x)) {
-                            this->addEdge(v1, v2);
+                        if(is_connected(v1, v2))
+                            continue;
+                        else if(similar_pixel(pixel[i][j], pixel[l][m], x)) {
+                            addEdge(v1, v2);
                         } // if
                     } // if
                     v2++;
@@ -90,27 +110,39 @@ void Graph::connect(int x) {
     } // for                       
 }  
 
-void Graph::connectedComponents() { 
-    bool *visited = new bool[V]; 
-    for(int v = 0; v < V; v++) 
-        visited[v] = false; 
+void Graph::connectedComponents() {
+    vector<bool> visited(V);
+    fill(visited.begin(), visited.end(), false);
+    vector<bool> points(V);
+    fill(points.begin(), points.end(), false);
   
-    for (int v=0; v<V; v++) { 
+    string filename = "segfile";
+    string filetype = ".ppm";
+    int filenum = 1;
+
+    for (int v=0; v < V; v++) { 
         if (visited[v] == false) { 
-            DFSUtil(v, visited); 
-  
-            cout << "\n"; 
+            DFS(v, visited, points);
+
+            IMG seg_img = segmentation(*img, points);
+
+            string file = filename + to_string(filenum) + filetype;
+            write_file(seg_img, file);
+
+            filenum++;
+
         } // if
+
+        fill(points.begin(), points.end(), false);
+
     } // for
-    delete[] visited; 
 } 
   
-void Graph::DFSUtil(int v, bool visited[]) { 
-    visited[v] = true; 
-    cout << v << " "; 
-  
-    list<int>::iterator i; 
-    for(i = adj[v].begin(); i != adj[v].end(); ++i) 
+void Graph::DFS(int v, vector<bool> &visited, vector<bool> &points) { 
+    visited[v] = true;
+    points[v] = true;
+
+    for(auto i = adj[v].begin(); i != adj[v].end(); ++i) 
         if(!visited[*i]) 
-            DFSUtil(*i, visited); 
+            DFS(*i, visited, points); 
 }
