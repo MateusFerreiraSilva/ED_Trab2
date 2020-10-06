@@ -17,7 +17,9 @@ int main(int argc, char *argv[]) {
 	// write_file(img, "aux2.ppm");
 	// write_file(img, "aux3.ppm");
 
-	IMG copy = copy_img(img);
+	// vector<int> v;
+	// seg_img(img, v);
+	
 	int pixels_size = img.rows * img.columns;
 	Graph g(pixels_size, img);
 	g.connect_pixels(x);

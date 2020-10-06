@@ -21,19 +21,9 @@ void write_file(IMG &img, string filename) {
 	for(int i = 0; i < size; i++)
 		ofs << img.buffer[i];
 
-    ofs.close();
+	ofs << flush;
 
-	// int aux = 0;
-	// for(int i = 0; i < img.rows; i++) {
-	// 	for(int j = 0; j < img.columns; j++) {
-	// 		for(int k = 0; k < 3; k++) {
-	// 			printf("%hhu", img.buffer[aux++]);
-	// 			if(k < 2) cout << " ";
-	// 		} // for
-	// 		cout << '\t';
-	// 	} // for
-	// 	cout << endl;
-	// } // for
+    ofs.close();
 
 } // write_file
 
@@ -59,14 +49,18 @@ IMG read_file(char mode) {
     
 } // read_file
 
-IMG copy_img(IMG &img) {
-	int size = img.rows * img.columns * 3;
-	unsigned char* buffer = (unsigned char*) malloc (sizeof(unsigned char) * size);
+IMG seg_img(IMG *img, list<int> &points) {
+	int size = img->rows * img->columns * 3;
+	unsigned char* buffer;
 
-	for(int i = 0; i < size; i++)
-		buffer[i] = img.buffer[i];
+	buffer = (unsigned char*) calloc (sizeof(unsigned char), size);
+	for(auto p : points) {
+		p *= 3;
+		for(int i = p; i < p+3; i++)
+			buffer[i] = img->buffer[i];
+	} // for
 
-	IMG copy(img.type, img.rows, img.columns, img.max, buffer);
+	IMG segmented_img(img->type, img->rows, img->columns, img->max, buffer);
 
-	return copy;
-} // copy_img
+	return segmented_img;
+} // seg_img
