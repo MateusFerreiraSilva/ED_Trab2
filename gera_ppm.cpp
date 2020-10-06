@@ -3,10 +3,10 @@ using namespace std;
 
 int main(void) {    
     int i, j;
-    const int dimx = 800, dimy = 600;
+    const int dimx = 4, dimy = 4;
 
     FILE *fp = fopen("first.ppm", "wb"); 
-    // fprintf(fp, "P6\n%d %d\n255\n\n", dimx, dimy);
+    fprintf(fp, "P6\n%d %d\n255\n\n", dimx, dimy);
 
     for (j = 0; j < dimy; ++j) {
         for (i = 0; i < dimx; ++i) {

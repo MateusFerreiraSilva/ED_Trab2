@@ -1,24 +1,17 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-bool do_something(vector<bool> v, int n) {
-    for(int i = 0; i < n; i++) {
-        if(i % 2 != 0)
-            v[i] = true;
-    } // for
-} // do_something 
-
 int main() {
-    vector<bool> v(10);
-    fill(v.begin(), v.end(), false);
+    unsigned char* buffer;
+    buffer = (unsigned char*) malloc (sizeof(unsigned char) * 6);
 
-    do_something(v, 10);
+    int aux = 0;
+    for(int i = 0; i < 6; i++)
+        buffer[aux++] = i;
 
-    for(int i = 0; i < 10; i++) {
-        if(v[i])
-            cout << "yep-> " << i << endl;
-        else
-            cout << "no-> " << i << endl;
+    aux = 0;
+    for(int i = 0; i < 6; i++) {
+            printf("%hhu\n", buffer[aux++]);
     } // for
 
 }

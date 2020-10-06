@@ -13,8 +13,11 @@ int main(int argc, char *argv[]) {
 	char mode = argv[2][0];
 
 	IMG img = read_file(mode);
+	// write_file(img, "aux1.ppm");
+	// write_file(img, "aux2.ppm");
 	// write_file(img, "aux3.ppm");
-	// IMG copy = copy_img(img);
+
+	IMG copy = copy_img(img);
 	int pixels_size = img.rows * img.columns;
 	Graph g(pixels_size, img);
 	g.connect_pixels(x);

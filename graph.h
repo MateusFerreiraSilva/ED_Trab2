@@ -6,7 +6,7 @@
 
 class Graph { 
     int V;    
-    list<int> *adj;
+    set<int> *adj; // adjacency list with set
   
     void DFS(int v, vector<bool> &visited, vector<bool> &points);
     bool is_connected(int v, int w); 
