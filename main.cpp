@@ -24,7 +24,6 @@ int main(int argc, char *argv[]) {
 	g.connectedComponents();
 
 	img.free_buffer();
-	// copy.free_buffer();
 
 	return 0;
 } // main

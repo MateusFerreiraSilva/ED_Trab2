@@ -158,7 +158,7 @@ void Graph::connectedComponents() {
 
         } // if
 
-        cont++;
+        // cont++;
         fill(points.begin(), points.end(), false);
 
     } // for

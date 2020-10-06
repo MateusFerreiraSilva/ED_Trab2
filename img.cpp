@@ -34,7 +34,7 @@ void write_file(IMG &img, string filename) {
 	// 	} // for
 	// 	cout << endl;
 	// } // for
-	
+
 } // write_file
 
 IMG read_file(char mode) {
