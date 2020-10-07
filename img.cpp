@@ -33,33 +33,39 @@ void IMG::read_img(char *file) {
 	char t[5]; // type
 	int m, trash; // max
 
-	FILE *f = fopen(file, "r");
-
+	FILE *f = NULL;
 	while(true) {
+		cout << "reading file...\n";
 		if(f != NULL) break;
 		f = fopen(file, "r");
 	} // while
 
-	fscanf(f, "%s", t);
-	fscanf(f, "%d\n %d\n", &trash, &trash); // throw away
-	fscanf(f, "%d\n", &m);
+	fscanf(f, "%s%d%d%d", t, &trash, &trash, &m);
 
 	type = t;
 	max = m;
 	
 	int i = 0;
-	while(true)
+	while(true) {
+		cout << "reading file...\n";
 		if(fread(buffer, sizeof(unsigned char), size, f) == size)
 			break;
+	} // while
 
 	fclose(f);
+
+	cout << "file successful readed\n";
 
 } // read_file
 
 void IMG::seg_img(vector<bool> &points) {
-	for(int i = 0; i < size; i++)
-		if(points[i])
-			buffer[i] = 0u;
+	for(int i = 0; i < rows * columns; i++) {
+		if(!points[i]) {
+			for(int j = 0; j < 3; j++) {
+				buffer[i+j] = (unsigned char) 0;
+			} // for
+		} // if
+	} // for
 } // seg_img
 
 void IMG::copy_img(IMG &img) {

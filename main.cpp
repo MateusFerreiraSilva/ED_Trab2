@@ -10,15 +10,14 @@ int main(int argc, char *argv[]) {
 	string str = argv[1];
 	int x = stoi(str, nullptr);
 
-	IMG img(99, 99);
+	IMG img(99, 99); // pss 99 only works to sign ppm, we have to make a function to preread the image and catch data about the size and type
 	img.read_img(argv[2]);
-	// img.write_img("./SEG/test.ppm");
 
 	int pixels = img.rows * img.columns; // vertices of my graph
 	
-	// Graph g(pixels, img);
-	// g.connectPixels(x);
-	// g.connectedComponents();
+	Graph g(pixels, img);
+	g.connectPixels(x);
+	g.connectedComponents();
 
 	return 0;
 } // main

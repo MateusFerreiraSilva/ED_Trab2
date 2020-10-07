@@ -21,9 +21,9 @@ bool similar_color(unsigned char a, unsigned char b, int x) {
 
 } // similar_color
 
-bool similar_pixel(unsigned char* a, unsigned char* b, int x) {
-    for(int i = 0; i < 3; i++)
-        if(!similar_color(a[i], b[i], x))
+bool similar_pixel(unsigned char* buffer, int i, int j, int x) {
+    for(int k = 0; k < 3; k++)
+        if(!similar_color(buffer[i+k], buffer[j+k], x))
             return false;
 
     return true;
@@ -58,11 +58,13 @@ void Graph::connectPixels(int x) {
 
     for(int i = 0; i < pixels; i++) {
         for(int j = 0; j < pixels; j++) {
-            if(i != j) { // check if they are the same pixel
-                if(!isConnected(i, j))
-                    if(similar_pixel(&img->buffer[i], &img->buffer[j], x))
-                        addEdge(i, j);
-            } // if
+            
+            for(int k = 0; k <= i; k++) // check if exist a vertice connected to j
+                if(isConnected(k, j))
+                    continue;
+            
+            if(similar_pixel(img->buffer, i, j, x))
+                addEdge(i, j);
         } // for
     } // for
 
@@ -72,8 +74,7 @@ void Graph::connectedComponents() {
     cout << "making files..." << endl;
     vector<bool> visited(V);
     fill(visited.begin(), visited.end(), false);
-    vector<bool> points(img->size);
-    fill(points.begin(), points.end(), true);
+    vector<bool> points(V);
 
     string filename = "./SEG/segfile";
     string filetype = ".ppm";
@@ -81,6 +82,7 @@ void Graph::connectedComponents() {
 
     for(int v = 0; v < V; v++) { 
         if(visited[v] == false) {
+            fill(points.begin(), points.end(), false); // reset points
 
             DFS(v, visited, points);
 
@@ -91,7 +93,6 @@ void Graph::connectedComponents() {
             new_img.seg_img(points);
             new_img.write_img(file);
 
-            fill(points.begin(), points.end(), true); // reset points
             filenum++;
         } // if
     } // for
@@ -99,8 +100,7 @@ void Graph::connectedComponents() {
   
 void Graph::DFS(int v, vector<bool> &visited, vector<bool> &points) { 
     visited[v] = true;
-    for(int i = v; i < v+3; i++)
-        points[i] = false;
+    points[v] = true;
 
     for(auto i = adj[v].begin(); i != adj[v].end(); i++) 
         if(!visited[*i]) 
