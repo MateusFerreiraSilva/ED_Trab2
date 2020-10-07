@@ -7,12 +7,12 @@ IMG::IMG(int rows, int columns) {
 	this->max = 0;
 	this->size = rows * columns * 3;
 	this->buffer = (unsigned char*) malloc(sizeof(unsigned char) * this->size);
+	if(this->buffer == NULL)
+		fail = 1;
 }
 
 IMG::~IMG() { 
-	// cout << "buffer will dies..\n";
     delete buffer; 
-    // cout << "buffer ga shinda\n";
 } 
 
 void IMG::write_img(string file) {
@@ -25,7 +25,7 @@ void IMG::write_img(string file) {
 
     ofs.close();
 
-	//fflush(stdout);
+	fflush(stdout);
 
 } // write_file
 
@@ -59,19 +59,21 @@ void IMG::read_img(char *file) {
 } // read_file
 
 void IMG::seg_img(vector<bool> &points) {
-	for(int i = 0; i < rows * columns; i++) {
-		if(!points[i]) {
-			for(int j = 0; j < 3; j++) {
-				buffer[i+j] = (unsigned char) 0;
-			} // for
-		} // if
-	} // for
+	unsigned char* b = (unsigned char*) calloc(sizeof(unsigned char), size);
+
+	for(int i = 0; i < size; i++)
+		if(points[i])
+			b[i] = buffer[i];
+
+	memcpy(buffer, b, size);
+
+	free(b);
+
 } // seg_img
 
 void IMG::copy_img(IMG &img) {
 	type = img.type;
 	max = img.max;
 
-	for(int i = 0; i < size; i++)
-		buffer[i] = img.buffer[i];
+	memcpy(buffer, img.buffer, size);
 } // copy_img

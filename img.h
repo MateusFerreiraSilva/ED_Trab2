@@ -12,6 +12,7 @@ class IMG {
 		int max;
 		int size;
 		unsigned char* buffer;
+		int fail = 0;
 
 		IMG(int rows, int columns);
 		~IMG();
