@@ -1,23 +1,23 @@
-#include"img.h"
+#include "img.h"
 
-IMG::IMG() {
+IMG::IMG(int rows, int columns) {
 	this->type = "";
-	this->rows = 0;
-	this->columns = 0;
+	this->rows = rows;
+	this->columns = columns;
 	this->max = 0;
-	this->buffer = (unsigned char*) calloc(sizeof(unsigned char), rows*columns*3);
+	this->size = rows * columns * 3;
+	this->buffer = (unsigned char*) malloc(sizeof(unsigned char) * this->size);
 }
 
 IMG::~IMG() { 
-	cout << "buffer will dies..\n";
+	// cout << "buffer will dies..\n";
     delete buffer; 
-    cout << "buffer ga shinda\n";
+    // cout << "buffer ga shinda\n";
 } 
 
-void IMG::write_img(string filename) {
-	int size = rows * columns * 3;
-	
-	ofstream ofs(filename, ios_base::out | ios_base::binary);
+void IMG::write_img(string file) {
+
+	ofstream ofs(file, ios_base::out | ios_base::binary);
 	ofs << type << endl << rows << ' ' << columns << endl << max;
 
 	for(int i = 0; i < size; i++)
@@ -29,47 +29,43 @@ void IMG::write_img(string filename) {
 
 } // write_file
 
-void IMG::read_img(char mode) {
-	string t; // type
-	int r, c, m; // rows, columns, max
+void IMG::read_img(char *file) {
+	char t[5]; // type
+	int m, trash; // max
 
-	cin >> t;	
-	cin >> r >> c >> m;
+	FILE *f = fopen(file, "r");
+
+	while(true) {
+		if(f != NULL) break;
+		f = fopen(file, "r");
+	} // while
+
+	fscanf(f, "%s", t);
+	fscanf(f, "%d\n %d\n", &trash, &trash); // throw away
+	fscanf(f, "%d\n", &m);
 
 	type = t;
-	rows = r;
-	columns = c;
 	max = m;
-	int size = rows * columns * 3;	
 	
-	if(mode == 'b')
-		fread(buffer, sizeof(unsigned char), size, stdin);	
-	else
-		for(int i = 0; i < size; i++)
-			scanf("%hhu", &buffer[i]);		
+	int i = 0;
+	while(true)
+		if(fread(buffer, sizeof(unsigned char), size, f) == size)
+			break;
+
+	fclose(f);
 
 } // read_file
 
 void IMG::seg_img(vector<bool> &points) {
-	int size = rows * columns * 3;
-
 	for(int i = 0; i < size; i++)
 		if(points[i])
-			buffer[i] = 0;
-
+			buffer[i] = 0u;
 } // seg_img
 
 void IMG::copy_img(IMG &img) {
 	type = img.type;
-	rows = img.rows;
-	columns = img.columns;
 	max = img.max;
 
-	int size = rows * columns * 3;
-
-	// for(int i = 0; i < size; i++)
-	// 	buffer[i] = img.buffer[i];
-
-	// printf("%hhu %hhu", img.buffer[0], img.buffer[9]);
-
+	for(int i = 0; i < size; i++)
+		buffer[i] = img.buffer[i];
 } // copy_img

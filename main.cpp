@@ -1,5 +1,5 @@
-#include"img.h"
-#include"graph.h"
+#include "img.h"
+#include "graph.h"
 
 int main(int argc, char *argv[]) {
 	if(argc != 3) {
@@ -10,21 +10,14 @@ int main(int argc, char *argv[]) {
 	string str = argv[1];
 	int x = stoi(str, nullptr);
 
-	char mode = argv[2][0];
+	IMG img(99, 99);
+	img.read_img(argv[2]);
+	// img.write_img("./SEG/test.ppm");
 
-	IMG img;
-	img.read_img(mode);
-
-	// cout << img.rows << endl;
-	// cout << img.columns << endl;
-
-	int pixels_size = img.rows * img.columns;
+	int pixels = img.rows * img.columns; // vertices of my graph
 	
-	cout << pixels_size << endl;
-
-	Graph g(pixels_size, img);
-	cout << "bbbbbbb\n";
-	// g.connect_pixels(x);
+	// Graph g(pixels, img);
+	// g.connectPixels(x);
 	// g.connectedComponents();
 
 	return 0;

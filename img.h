@@ -10,12 +10,13 @@ class IMG {
 		int rows;
 		int columns;
 		int max;
+		int size;
 		unsigned char* buffer;
 
-		IMG();
+		IMG(int rows, int columns);
 		~IMG();
-		void read_img(char mode);
-		void write_img(string filename);
+		void read_img(char *file);
+		void write_img(string file);
 		void seg_img(vector<bool> &points);
 		void copy_img(IMG &img);
 };
