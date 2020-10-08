@@ -1,12 +1,10 @@
 #include "img.h"
 
-IMG::IMG(int rows, int columns) {
-	this->rows = rows;
-	this->columns = columns;
-	this->size = rows * columns * 3 + 1;
-	this->buffer = (unsigned char*) malloc(sizeof(unsigned char) * this->size);
-	if(this->buffer == NULL)
-		this->fail = 1;
+IMG::IMG() {
+	this->rows = 0;
+	this->columns = 0;
+	this->size = 0;
+	this->buffer = NULL;
 }
 
 IMG::~IMG() { 
@@ -26,31 +24,6 @@ void IMG::write_img(const char *file, bool flag) {
   	fclose(f);
 } // write_file
 
-void IMG::read_img(const char *file) {
-	char trash_str[100];
-	int trash_int;
-
-	FILE *f = NULL;
-	while(true) {
-		cout << "reading file...\n";
-		if(f != NULL) break;
-		f = fopen(file, "r");
-	} // while
-
-	fscanf(f, "%s%d%d%s", trash_str, &trash_int, &trash_int, trash_str); 
-	
-	while(true) {
-		cout << "reading file...\n";
-		if(fread(buffer, sizeof(unsigned char), size, f) == size)
-			break;
-	} // while
-
-	fclose(f);
-
-	cout << "file successful readed\n";
-
-} // read_file
-
 bool IMG::seg_img(vector<bool> &points) {
 	bool flag = false;
 	if(points.size() >= 3 && points[0] && points[1] && points[2]) { // in case the first pixel be zero
@@ -65,5 +38,36 @@ bool IMG::seg_img(vector<bool> &points) {
 } // seg_img
 
 void IMG::copy_img(IMG *img) {
+	rows = img->rows;
+	columns = img->columns;
+	size = img->size;
+	buffer = (unsigned char*) malloc(sizeof(unsigned char) * size);
 	copy(img->buffer, img->buffer+size, buffer);
 } // copy_img
+
+void read_img(const char *file, IMG *img) {
+	char trash_str[100];
+
+	FILE *f = NULL;
+	while(true) {
+		cout << "reading file...\n";
+		if(f != NULL) break;
+		f = fopen(file, "r");
+	} // while
+
+	fscanf(f, "%s%d%d%s", trash_str, &img->rows, &img->columns, trash_str); 
+	
+	img->size = img->rows * img->columns * 3 + 1;
+	img->buffer = (unsigned char*) malloc(sizeof(unsigned char) * img->size);
+
+	while(true) {
+		cout << "reading file...\n";
+		if(fread(img->buffer, sizeof(unsigned char), img->size, f) == img->size)
+			break;
+	} // while
+
+	fclose(f);
+
+	cout << "file successful readed\n";
+
+} // read_file
