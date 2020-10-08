@@ -13,7 +13,7 @@ class Graph {
 	public:
 		IMG *img;
 		
-	    Graph(int V, IMG &img);
+	    Graph(int V, const char *file);
 	    ~Graph(); 
 	    void connectPixels(int x);
 	    void connectedComponents();

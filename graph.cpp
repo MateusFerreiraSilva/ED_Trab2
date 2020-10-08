@@ -32,10 +32,10 @@ bool similar_pixel(unsigned char* buffer, int i, int j, int x) {
 
 } // similar_pixel
 
-Graph::Graph(int V, IMG &img) {
+Graph::Graph(int V, const char *file) {
     this->V = V;
-    this->img = new IMG(img.rows, img.columns);
-    this->img->copy_img(img);
+    this->img = new IMG(99, 99);
+    this->img->read_img(file);
     this->adj = new list<int>[V];
 } // Graph
 
@@ -81,13 +81,18 @@ void Graph::connectedComponents() {
     string filetype = ".ppm";
     int filenum = 1;
 
+    const char aux[] = "auxfile.ppm";
+
+    img->write_img(aux, false);
+
     for(int v = 0; v < V; v++) { 
         if(!visited[v]) {
             for(auto p : points) p = true;
 
             DFS(v, visited, points);
 
-            string file = filename + to_string(filenum) + filetype;
+            string str = (filename + to_string(filenum) + filetype);
+            auto file = str.c_str();
 
             IMG new_img(img->rows, img->columns);
             if(new_img.fail) {
@@ -96,9 +101,9 @@ void Graph::connectedComponents() {
                 continue;
             } // if
 
-            new_img.copy_img(*img);
-            new_img.seg_img(points);
-            new_img.write_img(file);
+            new_img.copy_img(img);
+            bool flag = new_img.seg_img(points);
+            new_img.write_img(file, flag);
 
             filenum++;
         } // if
