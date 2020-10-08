@@ -12,20 +12,33 @@ IMG::IMG(int rows, int columns) {
 }
 
 IMG::~IMG() { 
-    delete buffer; 
+    delete buffer;
 } 
 
 void IMG::write_img(string file) {
 
 	ofstream ofs(file, ios_base::out | ios_base::binary);
-	ofs << type << endl << rows << ' ' << columns << endl << max;
+	if(ofs.good()) {
+		ofs << type << endl << rows << ' ' << columns << endl << max;
+		ofs.flush();
+	} else { 
+		ofs.close();
+		cout << "Error writing file " << file << endl;
+		return;
+	} // else
 
-	for(int i = 0; i < size; i++)
-		ofs << buffer[i];
+	for(int i = 0; i < size; i++) {
+		if(ofs.good()) {
+			ofs << buffer[i];
+			ofs.flush();
+		} else { 
+    		ofs.close();
+			cout << "Error writing file " << file << endl;
+			return;
+		} // else
+	} // for
 
     ofs.close();
-
-	fflush(stdout);
 
 } // write_file
 
@@ -58,16 +71,9 @@ void IMG::read_img(char *file) {
 
 } // read_file
 
-void IMG::seg_img(vector<bool> &points) {
-	unsigned char* b = (unsigned char*) calloc(sizeof(unsigned char), size);
-
-	for(int i = 0; i < size; i++)
-		if(points[i])
-			b[i] = buffer[i];
-
-	memcpy(buffer, b, size);
-
-	free(b);
+void IMG::seg_img(list<int> &points) {
+	for(auto p : points)
+		buffer[p] = 0;
 
 } // seg_img
 

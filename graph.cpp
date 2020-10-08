@@ -75,16 +75,14 @@ void Graph::connectedComponents() {
     cout << "making files..." << endl;
     vector<bool> visited(V);
     fill(visited.begin(), visited.end(), false);
-    vector<bool> points(img->size);
+    list<int> points;
 
     string filename = "./SEG/segfile";
     string filetype = ".ppm";
     int filenum = 1;
 
     for(int v = 0; v < V; v++) { 
-        if(visited[v] == false) {
-            fill(points.begin(), points.end(), false); // reset points
-
+        if(!visited[v]) {
             DFS(v, visited, points);
 
             string file = filename + to_string(filenum) + filetype;
@@ -101,14 +99,15 @@ void Graph::connectedComponents() {
             new_img.write_img(file);
 
             filenum++;
+            points.clear(); // reset points
         } // if
     } // for
 } // connectedComponents
   
-void Graph::DFS(int v, vector<bool> &visited, vector<bool> &points) { 
+void Graph::DFS(int v, vector<bool> &visited, list<int> &points) { 
     visited[v] = true;
     for(int i = v*3; i < v*3+3; i++)
-        points[i] = true;
+        points.push_back(i);
 
     for(auto i = adj[v].begin(); i != adj[v].end(); i++) 
         if(!visited[*i]) 
