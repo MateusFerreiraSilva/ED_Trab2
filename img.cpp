@@ -8,7 +8,7 @@ IMG::IMG(int rows, int columns) {
 	this->size = rows * columns * 3;
 	this->buffer = (unsigned char*) malloc(sizeof(unsigned char) * this->size);
 	if(this->buffer == NULL)
-		fail = 1;
+		this->fail = 1;
 }
 
 IMG::~IMG() { 
@@ -16,11 +16,14 @@ IMG::~IMG() {
 } 
 
 void IMG::write_img(string file) {
+	string r = to_string(rows);
+	string c = to_string(columns);
+	string m = to_string(max);
 
 	ofstream ofs(file, ios_base::out | ios_base::binary);
 	if(ofs.good()) {
-		ofs << type << endl << rows << ' ' << columns << endl << max;
-		ofs.flush();
+		ofs << type << '\n' << r << ' ' << c << '\n' << m;
+		// ofs.flush();
 	} else { 
 		ofs.close();
 		cout << "Error writing file " << file << endl;
@@ -30,7 +33,7 @@ void IMG::write_img(string file) {
 	for(int i = 0; i < size; i++) {
 		if(ofs.good()) {
 			ofs << buffer[i];
-			ofs.flush();
+			// ofs.flush();
 		} else { 
     		ofs.close();
 			cout << "Error writing file " << file << endl;
@@ -43,8 +46,7 @@ void IMG::write_img(string file) {
 } // write_file
 
 void IMG::read_img(char *file) {
-	char t[5]; // type
-	int m, trash; // max
+	char t[3], trash[10], m[4];
 
 	FILE *f = NULL;
 	while(true) {
@@ -53,10 +55,11 @@ void IMG::read_img(char *file) {
 		f = fopen(file, "r");
 	} // while
 
-	fscanf(f, "%s%d%d%d", t, &trash, &trash, &m);
+	fscanf(f, "%s%s%s%s", t, trash, trash, m);
 
 	type = t;
-	max = m;
+	string str = m;
+	max = stoi(str, nullptr); 
 	
 	int i = 0;
 	while(true) {
@@ -71,10 +74,10 @@ void IMG::read_img(char *file) {
 
 } // read_file
 
-void IMG::seg_img(list<int> &points) {
-	for(auto p : points)
-		buffer[p] = 0;
-
+void IMG::seg_img(vector<bool> &points) {
+	for(int i = 0; i < points.size(); i++)
+		if(points[i])
+			buffer[i] = 0;
 } // seg_img
 
 void IMG::copy_img(IMG &img) {

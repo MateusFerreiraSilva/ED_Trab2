@@ -18,7 +18,7 @@ class IMG {
 		~IMG();
 		void read_img(char *file);
 		void write_img(string file);
-		void seg_img(list<int> &points);
+		void seg_img(vector<bool> &points);
 		void copy_img(IMG &img);
 };
 
