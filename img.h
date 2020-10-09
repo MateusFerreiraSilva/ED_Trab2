@@ -1,3 +1,9 @@
+/**
+ * @img.h
+ * @author Mateus Ferreira Silva
+ * @date 08/10/2020
+ **/
+
 #include<bits/stdc++.h>
 using namespace std;
 

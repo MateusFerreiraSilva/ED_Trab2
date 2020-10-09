@@ -1,3 +1,10 @@
+/**
+ * @img.cpp
+ * @author Mateus Ferreira Silva
+ * @date 08/10/2020
+ **/
+
+
 #include "img.h"
 
 IMG::IMG() {
@@ -13,7 +20,10 @@ IMG::~IMG() {
 
 void IMG::write_img(const char *file, bool flag) {
 	FILE *f = fopen(file, "wb");
-	if(flag) { 
+	if(f == NULL) {
+		cout << "Error writing file\n";
+		return;
+	} else if(flag) { 
 		fprintf(f, "P6\n%d %d\n255\n", rows, columns);
   		fwrite(buffer+1, sizeof(unsigned char), size, f); // discart \n
 	} // if 
@@ -49,25 +59,32 @@ void read_img(const char *file, IMG *img) {
 	char trash_str[100];
 
 	FILE *f = NULL;
-	while(true) {
-		cout << "reading file...\n";
-		if(f != NULL) break;
+	for(int i = 0; i < 10; i++) {
+		cout << "Reading file...\n";
 		f = fopen(file, "r");
-	} // while
+		if(f != NULL) break;
+		else if(i == 9) {
+			cout << "Error reading file\n";
+			return;
+		} // else if
+	} // for
 
 	fscanf(f, "%s%d%d%s", trash_str, &img->rows, &img->columns, trash_str); 
 	
 	img->size = img->rows * img->columns * 3 + 1;
 	img->buffer = (unsigned char*) malloc(sizeof(unsigned char) * img->size);
 
-	while(true) {
-		cout << "reading file...\n";
+	for(int i = 0; i < 10; i++) {
 		if(fread(img->buffer, sizeof(unsigned char), img->size, f) == img->size)
 			break;
-	} // while
+		else if(i == 9) {
+			cout << "Error reading file\n";
+			return;
+		} // else if
+	} // for
 
 	fclose(f);
 
-	cout << "file successful readed\n";
+	cout << "File successful readed\n";
 
 } // read_file

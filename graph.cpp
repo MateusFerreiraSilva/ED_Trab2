@@ -1,3 +1,9 @@
+/**
+ * @grap.cpp
+ * @author Mateus Ferreira Silva
+ * @date 08/10/2020
+ **/
+
 #include "graph.h"
 
 bool similar_color(unsigned char a, unsigned char b, int x) {
@@ -25,8 +31,8 @@ bool similar_pixel(unsigned char* buffer, int i, int j, int x) {
     i *= 3;
     j *= 3;
     for(int k = 0; k < 3; k++)
-        if(!similar_color(buffer[i+k], buffer[j+k], x))
-            return false;
+        if(!similar_color(buffer[i+k], buffer[j+k], x)) // two pixels are similar if all of their colors
+            return false;                               // are similar
 
     return true;
 
@@ -60,11 +66,13 @@ bool Graph::isConnected(int v) {
 } // isConnected
 
 void Graph::connectPixels(int x) {
+    cout << "Connecting pixels...\n";
+
     int pixels = img->rows * img->columns;
 
     for(int i = 0; i < pixels; i++) {
         for(int j = 0; j < pixels; j++) {
-            if(isConnected(j)) // check if exist a vertice connected to j
+            if(isConnected(j)) // check if exist at least one vertex connected to j
                 continue;
             if(similar_pixel(img->buffer, i, j, x))
                 addEdge(i, j);
@@ -74,7 +82,7 @@ void Graph::connectPixels(int x) {
 } // connectPixels
 
 void Graph::connectedComponents() {
-    cout << "making files..." << endl;
+    cout << "Making files..." << endl;
     vector<bool> visited(V);
     fill(visited.begin(), visited.end(), false);
     vector<bool> points(img->size);
